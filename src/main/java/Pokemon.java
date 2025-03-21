@@ -2,6 +2,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Pokemon {
+
     String name;
     Stats stats;
     Specie specie;
@@ -11,10 +12,9 @@ public class Pokemon {
     Nature nature;
     boolean isShiny;
     int currentExperience;
-    Random random = new Random();
+    private final Random random = new Random();
 
     public Pokemon(Stats stats, Specie specie, int level, Attack[] attacks) {
-
 
         this.name = specie.name;
         this.stats = stats;
@@ -35,6 +35,9 @@ public class Pokemon {
         this.attacks = attacks;
         this.isShiny = this.determineShiny();
         this.currentExperience = 0;
+
+        if(!repOk())
+            throw new RuntimeException("Pokemon doesn't sat repOk");
     }
     private boolean determineShiny() {
         return random.nextInt(100) == 1;
@@ -43,11 +46,10 @@ public class Pokemon {
         return null; //TODO
     }
     public void increaseCurrentExperience(int experience) {
-        int potentialNewExp = this.currentExperience + experience;
-        int currentMax = calculateCurrentMaxExperience();
-        if(potentialNewExp >= currentMax) {
+        int experienceNeededForLevelUp = calculateCurrentMaxExperience() - this.currentExperience;
+        if(experience >= experienceNeededForLevelUp) {
             this.levelUp();
-            increaseCurrentExperience(currentMax - experience);
+            increaseCurrentExperience(experience - experienceNeededForLevelUp);
         }
     }
     private int calculateCurrentMaxExperience() {
@@ -64,11 +66,11 @@ public class Pokemon {
             boolean attackLearnedByLevel = attackExistsInList(this.specie.movementsByLevel, attack);
             boolean attackLearnedByOtherWay = attackExistsInList(this.specie.movementsByOtherWays, attack);
 
-            if(!attackLearnedByLevel && !attackLearnedByOtherWay) {
+            if(!attackLearnedByLevel || !attackLearnedByOtherWay) {
                 return false;
             }
         }
-        return sex != null && nature != null && stats != null && (level <= 0 || level > 100) && !name.isEmpty() && specie != null && currentExperience >= 0 && currentExperience < calculateCurrentMaxExperience();
+        return attacksCheck && sex != null && nature != null && stats != null && (level <= 0 || level > 100) && !name.isEmpty() && specie != null && currentExperience >= 0 && currentExperience < calculateCurrentMaxExperience();
     }
 
     private <T> boolean attackExistsInList(List<Tuple<T, Attack>> movements, Attack attack) {

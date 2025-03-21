@@ -16,5 +16,6 @@ public enum Type {
     DRAGON,
     ICE,
     BUG,
-    POISON
+    POISON,
+    OTHER
 }
