@@ -5,13 +5,13 @@ public class Specie {
     String name;
     List<Tuple<EvolutionMethod, Specie>> evolutions;
     List<Tuple<Integer,Attack>> movementsByLevel; //(level, attack)
-    List<Attack> movementsByOtherWays;
+    List<Tuple<LearnMethod,Attack>> movementsByOtherWays;
     Type firstType;
     Type secondType;
     Stats baseStats;
     List<Sex> availableSexes;
 
-    public Specie(int id, String name, List<Tuple<EvolutionMethod, Specie>> evolutions, List<Tuple<Integer, Attack>> movementsByLevel, List<Attack> movementsByOtherWays, Type firstType, Type secondType, Stats baseStats, List<Sex> availableSexes) {
+    public Specie(int id, String name, List<Tuple<EvolutionMethod, Specie>> evolutions, List<Tuple<Integer, Attack>> movementsByLevel, List<Tuple<LearnMethod,Attack>>movementsByOtherWays, Type firstType, Type secondType, Stats baseStats, List<Sex> availableSexes) {
         this.id = id;
         this.name = name;
         this.evolutions = evolutions;
@@ -24,7 +24,7 @@ public class Specie {
     }
 
     public boolean repOK() {
-        return !(id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null || movementsByOtherWays == null);
+        return !(id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null || movementsByOtherWays == null || movementsByOtherWays.isEmpty() || availableSexes == null || availableSexes.isEmpty() || movementsByLevel.isEmpty());
     }
 
 }

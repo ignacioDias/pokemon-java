@@ -1,24 +1,22 @@
 public class Tuple <T, U> {
-    private T t;
-    private U u;
+    private T first;
+    private U second;
 
-    public Tuple(T t, U u) {
-        this.t = t;
-        this.u = u;
+    public Tuple(T first, U second) {
+        this.first = first;
+        this.second = second;
     }
 
-    public T getT() {
-        return t;
+    public T getFirst() {
+        return first;
     }
-
-    public void setT(T t) {
-        this.t = t;
+    public U getSecond() {
+        return second;
     }
-    public U getU() {
-        return u;
+    public void setSecond(U second) {
+        this.second = second;
     }
-
-    public void setU(U u) {
-        this.u = u;
+    public void setFirst(T first) {
+        this.first = first;
     }
 }
