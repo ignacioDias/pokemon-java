@@ -17,5 +17,5 @@ public enum Type {
     ICE,
     BUG,
     POISON,
-    OTHER
+    NONE
 }
