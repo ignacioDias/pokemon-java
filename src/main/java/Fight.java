@@ -31,6 +31,10 @@ public class Fight {
                     performTurn(pokemon2, pokemon1, attack2, attack1);
                 }
             }
+            if(pokemon1.stats.life <= 0)
+                fighter1.killPokemon();
+            if(pokemon2.stats.life <= 0)
+                fighter2.killPokemon();
         }
         System.out.println((fighter1.canFight() ? fighter1 : fighter2) + " wins");
     }
