@@ -31,12 +31,15 @@ public class Attack {
         return true;
     }
     private int calculateDamage(Pokemon attacker, Pokemon victim) {
+        Random rand = new Random();
         double modifier = 1;
         if(attacker.specie.firstType == this.type || attacker.specie.secondType == this.type)
             modifier = 1.5;
-        if(isWeakToAttack(victim.specie.firstType) || isWeakToAttack(attacker.specie.secondType))
+        if(isWeakToAttack(victim.specie.firstType))
             modifier *= 2;
-        return (int) ((((double) (((2 * attacker.level) / 5 + 2) * this.damage * attacker.stats.attack / victim.stats.defense) / 50) + 2 ) * modifier);
+        if(isWeakToAttack(attacker.specie.secondType))
+            modifier *= 2;
+        return (int) ((((double) (((2 * attacker.level) / 5 + 2) * this.damage * attacker.stats.attack / victim.stats.defense) / 50) + 2 ) * modifier) + rand.nextInt(victim.stats.life / 10);
     }
     private boolean isWeakToAttack(Type victimType) {
         switch(this.type) {
