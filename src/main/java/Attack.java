@@ -81,9 +81,12 @@ public class Attack {
     private void applyEffect(Effect effect, Pokemon victim) throws IllegalArgumentException {
         if(effect == Effect.NONE) {
             throw new IllegalArgumentException("effect is NONE in applyEffect");
+        } else if(effect == Effect.BURN) {
+            victim.stats.attack /= 2;
+        } else if(effect == Effect.PARALYSIS) {
+            victim.stats.speed /= 2;
         }
         victim.state = effect;
-        //TODO: ADD STATS CHANGES, WHEN A POKEMON IS CHANGED, IT CAN BE REVERSE WITH A LOCAL METHOD THAT WILL IGNORE STATUS EFFECTS
     }
     public boolean repOk() {
         return !(type == Type.NONE || damage < 0 || (effect == Effect.NONE && isStatusAttack) ||

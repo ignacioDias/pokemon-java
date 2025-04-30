@@ -20,7 +20,7 @@ public class PokemonTest {
         List<Tuple<LearnMethod, Attack>> movementsByOtherWays = List.of(new Tuple<>(LearnMethod.MT, mockAttack));
         List<Sex> sexes = List.of(Sex.OTHER);
         mockStats = mock(Stats.class);
-        mockSpecie = new Specie(1, "Dummy", null, movementsByLevel, movementsByOtherWays, Type.OTHER, null, mockStats, sexes);
+        mockSpecie = new Specie(1, "Dummy", null, movementsByLevel, movementsByOtherWays, Type.FIRE, null, mockStats, sexes, mockStats);
     }
 
     @Test

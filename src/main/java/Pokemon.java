@@ -18,6 +18,15 @@ public class Pokemon {
 
     private final Random random = new Random();
 
+    public Pokemon(Pokemon pokemonToCopy) {
+        this.name = pokemonToCopy.name;
+        this.stats = new Stats(pokemonToCopy.stats);
+        this.evs = pokemonToCopy.evs;
+        this.ivs = pokemonToCopy.ivs;
+        this.specie = pokemonToCopy.specie;
+        this.level = pokemonToCopy.level;
+        this.attacks = pokemonToCopy.attacks;
+    }
     public Pokemon(Specie specie, int level, Attack[] attacks) {
 
         this.name = specie.name;
@@ -77,8 +86,15 @@ public class Pokemon {
             this.currentExperience = 0;
         }
     }
+    public void clearStatus() {
+        if(this.state == Effect.BURN)
+            this.stats.attack *= 2;
+        if(this.state == Effect.PARALYSIS)
+            this.stats.speed *= 2;
+        this.state = Effect.NONE;
+    }
     public boolean repOk() {
-        if(this.attacks == null || this.attacks.length == 0)
+        if(this.attacks == null || this.attacks.length == 0 || this.state == null || this.specie == null)
             return false;
         for (Attack attack : this.attacks) {
             boolean attackLearnedByLevel = attackExistsInList(this.specie.movementsByLevel, attack);
@@ -87,12 +103,12 @@ public class Pokemon {
                 return false;
         }
         return ivs != null && evs != null && sex != null && nature != null && stats != null && level > 0 && level <= 100
-                && !name.isEmpty() && specie != null && currentExperience >= 0 && currentExperience < calculateCurrentMaxExperience();
+                && !name.isEmpty() && currentExperience >= 0 && currentExperience < calculateCurrentMaxExperience();
     }
 
     private <T> boolean attackExistsInList(List<Tuple<T, Attack>> movements, Attack attack) {
         for (Tuple<T, Attack> movement : movements) {
-            if (movement.getSecond().equals(attack))
+            if (movement.second.equals(attack))
                 return true;
         }
         return false;
