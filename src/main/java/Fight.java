@@ -1,11 +1,13 @@
 import java.util.Random;
 
 public class Fight {
+
     private final Fighter fighter1;
     private final Fighter fighter2;
     private final Random rand = new Random();
     private static final int PARALYSIS_PROBABILITY = 30;
     private static final int FREEZE_PROBABILITY = 20;
+
     public Fight(Fighter fighter1, Fighter fighter2) {
         if (fighter1 == null || fighter2 == null) {
             throw new IllegalArgumentException("Fighters cannot be null");
@@ -18,7 +20,6 @@ public class Fight {
         while (fighter1.canFight() && fighter2.canFight()) {
             Pokemon pokemon1 = new Pokemon(fighter1.getNextPokemon());
             Pokemon pokemon2 = new Pokemon(fighter2.getNextPokemon());
-
             while (pokemon1.stats.life > 0 && pokemon2.stats.life > 0) {
                 Attack attack1 = fighter1.getNextAttack();
                 Attack attack2 = fighter2.getNextAttack();
@@ -31,10 +32,7 @@ public class Fight {
                 }
             }
         }
-        if(fighter1.canFight())
-            System.out.println(fighter1.toString() + " wins");
-        else
-            System.out.println(fighter2.toString() + " wins");
+        System.out.println((fighter1.canFight() ? fighter1 : fighter2) + " wins");
     }
 
     private boolean isFirstAttacker(Pokemon p1, Pokemon p2) {
@@ -47,12 +45,14 @@ public class Fight {
         checkClearStatus(first);
         if(canAttack(first))
             firstAttack.attack(first, second);
-        if (second.stats.life <= 0)
+        if (second.stats.life <= 0) {
             return; // only attack if still alive
+        }
         checkClearStatus(second);
         if(canAttack(second))
             secondAttack.attack(second, first);
     }
+
     private boolean canAttack(Pokemon pokemon) {
         boolean isSleepingOrFrozen = pokemon.state == Effect.SLEEP || pokemon.state == Effect.FREEZE;
         boolean isParalyzed = isPokemonParalyzed(pokemon);
@@ -76,4 +76,5 @@ public class Fight {
         return AuxiliarMethods.calculateProbability(FREEZE_PROBABILITY) &&
                 (pokemon.state == Effect.FREEZE || pokemon.state == Effect.SLEEP);
     }
+
 }

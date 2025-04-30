@@ -1,5 +1,5 @@
 public interface Fighter {
-    boolean canFight();
-    Pokemon getNextPokemon();
-    Attack getNextAttack();
+    public boolean canFight();
+    public Pokemon getNextPokemon();
+    public Attack getNextAttack();
 }
