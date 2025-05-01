@@ -7,7 +7,7 @@ public enum Type {
     FLYING,
     FIGHT,
     ROCK,
-    STEAL,
+    STEEL,
     GROUND,
     GHOST,
     DARK,

@@ -32,6 +32,7 @@ public class Pokemon {
         this.name = specie.name;
         this.specie = specie;
         this.level = level;
+        this.state = Effect.NONE;
 
         //Determine sex
         int quantityOfAvailableSexes = specie.availableSexes.size();
