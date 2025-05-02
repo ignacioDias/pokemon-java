@@ -45,7 +45,7 @@ public class Trainer implements Fighter {
         if(currentPokemonIndex < 0 || currentPokemonIndex > pokemon.size() - 1 || pokemon.get(currentPokemonIndex).getStats().life == 0 || pokemon.get(currentPokemonIndex) == null) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        pokemon.get(currentPokemonIndex).setLife(0);
+        pokemon.get(currentPokemonIndex).kill();
     }
 
 }

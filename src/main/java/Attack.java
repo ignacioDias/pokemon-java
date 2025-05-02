@@ -29,7 +29,7 @@ public class Attack {
             applyEffect(this.effect, rival);
         if(!isStatusAttack) {
             int damage = calculateDamage(attacker, rival);
-            rival.getStats().life -= damage;
+            rival.setLife(rival.getStats().life - damage);
         }
         return true;
     }
@@ -56,21 +56,40 @@ public class Attack {
     }
     private int calculateDamage(Pokemon attacker, Pokemon victim) {
         Random rand = new Random();
-        double modifier = 1;
-        if(attacker.specie.firstType == this.type || attacker.specie.secondType == this.type)
-            modifier = 1.5;
-        if(isWeakToAttack(victim.specie.firstType))
-            modifier *= 2;
-        if(isWeakToAttack(victim.specie.secondType))
-            modifier *= 2;
-        if(isStrongToAttack(victim.specie.firstType))
-            modifier /= 2;
-        if(isStrongToAttack(victim.specie.secondType))
-            modifier /= 2;
+
         Stats statsOfAttacker = attacker.getStats();
         Stats statsOfVictim = victim.getStats();
-        return (int) ((((double) (((2 * attacker.level) / 5 + 2) * this.damage * statsOfAttacker.attack / statsOfVictim.defense) / 50) + 2 ) * modifier) + rand.nextInt(statsOfVictim.life / 10);
+        // Protección contra división por 0
+        if (statsOfVictim.defense == 0) {
+            statsOfVictim.defense = 1;
+        }
+        // STAB (Same Type Attack Bonus)
+        double modifier = 1.0;
+        if (attacker.specie.firstType == this.type || attacker.specie.secondType == this.type) {
+            modifier *= 1.5;
+        }
+        // Efectividad de tipo
+        if (isWeakToAttack(victim.specie.firstType)) {
+            modifier *= 2;
+        }
+        if (isWeakToAttack(victim.specie.secondType)) {
+            modifier *= 2;
+        }
+        if (isStrongToAttack(victim.specie.firstType)) {
+            modifier *= 0.5;
+        }
+        if (isStrongToAttack(victim.specie.secondType)) {
+            modifier *= 0.5;
+        }
+        // Variación aleatoria entre 0.85 y 1.00
+        double randomFactor = 0.85 + (0.15 * rand.nextDouble());
+        // Fórmula de daño
+        double baseDamage = (((((2 * attacker.level) / 5.0) + 2) * this.damage * statsOfAttacker.attack / statsOfVictim.defense) / 50.0) + 2;
+        // Daño final
+        int finalDamage = (int) (baseDamage * modifier * randomFactor);
+        return Math.max(1, finalDamage); // mínimo 1 daño
     }
+
     private boolean isStrongToAttack(Type victimType) {
         switch (this.type) {
             case NORMAL:    return victimType == Type.ROCK || victimType == Type.STEEL;
@@ -123,12 +142,14 @@ public class Attack {
 
     private void applyEffect(Effect effect, Pokemon victim) throws IllegalArgumentException {
         Stats statsOfVictim = victim.getStats();
+        if(victim.state != Effect.NONE) //Already affected by something
+            return;
         if(effect == Effect.NONE) {
             throw new IllegalArgumentException("effect is NONE in applyEffect");
         } else if(effect == Effect.BURN) {
-            victim.setAttack(statsOfVictim.attack / 2);
+            victim.statsAffectedByStates.attack = 50;
         } else if(effect == Effect.PARALYSIS) {
-            victim.setSpeed(statsOfVictim.speed / 2);
+            victim.statsAffectedByStates.speed = 50;
         }
         victim.state = effect;
     }

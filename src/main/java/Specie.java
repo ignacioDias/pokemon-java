@@ -25,7 +25,18 @@ public class Specie {
         this.availableSexes = availableSexes;
         this.evsGivenAfterDefeat = evsGivenAfterDefeat;
     }
+    public Specie(Specie specieToCopy) {
+        this.id = specieToCopy.id;
+        this.name = specieToCopy.name;
+        this.evolutions = specieToCopy.evolutions;
+        this.movementsByLevel = specieToCopy.movementsByLevel;
+        this.movementsByOtherWays = specieToCopy.movementsByOtherWays;
+        this.firstType = specieToCopy.firstType;
+        this.secondType = specieToCopy.secondType;
+        this.baseStats = specieToCopy.baseStats;
+        this.availableSexes = specieToCopy.availableSexes;
 
+    }
     public boolean repOK() {
         //todo: check no attacks with wrong levels
         return !(firstType == Type.NONE || id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null || movementsByOtherWays == null || movementsByOtherWays.isEmpty() || availableSexes == null || availableSexes.isEmpty() || movementsByLevel.isEmpty());
@@ -42,6 +53,8 @@ public class Specie {
             if(index == 4)
                 break;
         }
+        if(index == 0)
+            attacks[0] = new Attack("Punch", Type.NORMAL, 15, 100, "Generic attack", Effect.NONE, 0) ;
         return attacks;
     }
 }

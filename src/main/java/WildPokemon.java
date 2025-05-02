@@ -1,8 +1,8 @@
 import java.util.Random;
 
-public class SavagePokemon implements Fighter {
+public class WildPokemon implements Fighter {
     Pokemon pokemon;
-    public SavagePokemon(Pokemon pokemon) {
+    public WildPokemon(Pokemon pokemon) {
         this.pokemon = pokemon;
     }
     public boolean canFight() {
@@ -22,6 +22,6 @@ public class SavagePokemon implements Fighter {
     }
 
     public void killPokemon() {
-        pokemon.setLife(0);
+        pokemon.kill();
     }
 }
