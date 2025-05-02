@@ -29,7 +29,7 @@ public class PokemonTest {
 
         Attack[] attacks = {mockAttack};
         for (int i = 0; i < 900; i++) {
-            Pokemon dummy = new Pokemon(mockSpecie, 5, attacks);
+            Pokemon dummy = new Pokemon(mockSpecie, 5);
             if (dummy.isShiny) {
                 foundShiny = true;
                 break;
@@ -41,43 +41,43 @@ public class PokemonTest {
     public void testInvalidPokemonConstructor() {
         Attack[] validAttacks = {mockAttack};
         assertThrows(NullPointerException.class, () ->
-                        new Pokemon(null, 5, validAttacks),
+                        new Pokemon(null, 5),
                 "Debería lanzar una excepción si la especie es nula."
         );
         assertThrows(IllegalArgumentException.class, () ->
-                        new Pokemon(mockSpecie, 5, null),
+                        new Pokemon(mockSpecie, 5),
                 "Debería lanzar una excepción si la lista de ataques es nula."
         );
         assertThrows(IllegalArgumentException.class, () ->
-                        new Pokemon(mockSpecie, 5, new Attack[0]),
+                        new Pokemon(mockSpecie, 5),
                 "Debería lanzar una excepción si la lista de ataques está vacía."
         );
         assertThrows(IllegalArgumentException.class, () ->
-                        new Pokemon(mockSpecie, 0, validAttacks),
+                        new Pokemon(mockSpecie, 0),
                 "Debería lanzar una excepción si el nivel es 0."
         );
         assertThrows(IllegalArgumentException.class, () ->
-                        new Pokemon(mockSpecie, 101, validAttacks),
+                        new Pokemon(mockSpecie, 101),
                 "Debería lanzar una excepción si el nivel es mayor a 100."
         );
     }
     @Test
     public void testValidPokemonConstructor() {
         Attack[] attacks = {mockAttack};
-        assertDoesNotThrow(() -> new Pokemon(mockSpecie, 10, attacks));
-        Pokemon pokemon = new Pokemon(mockSpecie, 10, attacks);
+        assertDoesNotThrow(() -> new Pokemon(mockSpecie, 10));
+        Pokemon pokemon = new Pokemon(mockSpecie, 10);
         assertNotNull(pokemon);
         assertEquals("Dummy", pokemon.name);
         assertTrue(pokemon.level > 0 && pokemon.level <= 100);
         assertNotNull(pokemon.sex);
         assertNotNull(pokemon.nature);
-        assertNotNull(pokemon.stats);
+        assertNotNull(pokemon.getStats());
         assertEquals(0, pokemon.currentExperience);
     }
     @Test
     public void testIncreaseCurrentExperience() {
         Attack[] attacks = {mockAttack};
-        Pokemon pokemon = new Pokemon(mockSpecie, 1, attacks);
+        Pokemon pokemon = new Pokemon(mockSpecie, 1);
         pokemon.increaseCurrentExperience(1);
         boolean currentExperienceIsOne = pokemon.currentExperience == 1;
         boolean levelDidntChange = pokemon.level == 1;
@@ -87,7 +87,7 @@ public class PokemonTest {
     @Test
     public void testIncreaseCurrentExperienceWithLevelUp() {
         Attack[] attacks = {mockAttack};
-        Pokemon pokemon = new Pokemon(mockSpecie, 1, attacks);
+        Pokemon pokemon = new Pokemon(mockSpecie, 1);
         pokemon.increaseCurrentExperience(100);
         assertTrue("Didnt level up", pokemon.level > 1);
         assertTrue("Didnt load the exp", pokemon.currentExperience > 0);

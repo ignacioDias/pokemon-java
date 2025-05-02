@@ -4,7 +4,7 @@ import java.util.Random;
 public class Pokemon {
 
     String name;
-    Stats stats;
+    private Stats stats;
     Stats evs = new Stats(0, 0, 0, 0);
     Stats ivs;
     Specie specie;
@@ -27,7 +27,7 @@ public class Pokemon {
         this.level = pokemonToCopy.level;
         this.attacks = pokemonToCopy.attacks;
     }
-    public Pokemon(Specie specie, int level, Attack[] attacks) {
+    public Pokemon(Specie specie, int level) {
 
         this.name = specie.name;
         this.specie = specie;
@@ -38,14 +38,13 @@ public class Pokemon {
         int quantityOfAvailableSexes = specie.availableSexes.size();
         int randomSexPosition = random.nextInt(quantityOfAvailableSexes);
         this.sex = specie.availableSexes.get(randomSexPosition);
-        this.stats = this.calculateStats();
 
         //Determine nature
         Nature[] natures = Nature.values();
         int randomNaturePosition = random.nextInt(natures.length);
         this.nature = natures[randomNaturePosition];
 
-        this.attacks = attacks;
+        this.attacks = specie.generateAttacks(level);
         this.isShiny = this.determineShiny();
         this.currentExperience = 0;
 
@@ -54,9 +53,30 @@ public class Pokemon {
         int defense = random.nextInt(31) + 1;
         int speed = random.nextInt(31) + 1;
         this.ivs = new Stats(life, attack, defense, speed);
+        this.stats = this.calculateStats();
 
         if(!repOk())
             throw new IllegalArgumentException("Pokemon doesn't sat repOk");
+    }
+    public Stats getStats() {
+        this.stats = this.calculateStats();
+        return this.stats;
+    }
+    public void setLife(int life) {
+        this.stats = this.calculateStats();
+        this.stats.life = life;
+    }
+    public void setAttack(int attack) {
+        this.stats = this.calculateStats();
+        this.stats.attack = attack;
+    }
+    public void setDefense(int defense) {
+        this.stats = this.calculateStats();
+        this.stats.defense = defense;
+    }
+    public void setSpeed(int speed) {
+        this.stats = this.calculateStats();
+        this.stats.speed = speed;
     }
     private boolean determineShiny() {
         return random.nextInt(100) == 1;

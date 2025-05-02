@@ -10,8 +10,9 @@ public class Attack {
     int probabilityOfEffect;
     boolean isStatusAttack;
 
-    public Attack(String name, Type type, int accuracy, String description, Effect effect, int probabilityOfEffect) {
+    public Attack(String name, Type type, int damage, int accuracy, String description, Effect effect, int probabilityOfEffect) {
         this.name = name;
+        this.damage = damage;
         this.type = type;
         this.accuracy = accuracy;
         this.description = description;
@@ -28,7 +29,7 @@ public class Attack {
             applyEffect(this.effect, rival);
         if(!isStatusAttack) {
             int damage = calculateDamage(attacker, rival);
-            rival.stats.life -= damage;
+            rival.getStats().life -= damage;
         }
         return true;
     }
@@ -66,7 +67,9 @@ public class Attack {
             modifier /= 2;
         if(isStrongToAttack(victim.specie.secondType))
             modifier /= 2;
-        return (int) ((((double) (((2 * attacker.level) / 5 + 2) * this.damage * attacker.stats.attack / victim.stats.defense) / 50) + 2 ) * modifier) + rand.nextInt(victim.stats.life / 10);
+        Stats statsOfAttacker = attacker.getStats();
+        Stats statsOfVictim = victim.getStats();
+        return (int) ((((double) (((2 * attacker.level) / 5 + 2) * this.damage * statsOfAttacker.attack / statsOfVictim.defense) / 50) + 2 ) * modifier) + rand.nextInt(statsOfVictim.life / 10);
     }
     private boolean isStrongToAttack(Type victimType) {
         switch (this.type) {
@@ -119,12 +122,13 @@ public class Attack {
     }
 
     private void applyEffect(Effect effect, Pokemon victim) throws IllegalArgumentException {
+        Stats statsOfVictim = victim.getStats();
         if(effect == Effect.NONE) {
             throw new IllegalArgumentException("effect is NONE in applyEffect");
         } else if(effect == Effect.BURN) {
-            victim.stats.attack /= 2;
+            victim.setAttack(statsOfVictim.attack / 2);
         } else if(effect == Effect.PARALYSIS) {
-            victim.stats.speed /= 2;
+            victim.setSpeed(statsOfVictim.speed / 2);
         }
         victim.state = effect;
     }

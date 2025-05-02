@@ -18,7 +18,7 @@ public class Trainer implements Fighter {
         System.out.println("Ingrese el pokemon a lanzar, empezando del 0");
         currentPokemonIndex = sc.nextInt();
         if(currentPokemonIndex < 0 || currentPokemonIndex > pokemon.size() - 1 ||
-          pokemon.get(currentPokemonIndex) == null || pokemon.get(currentPokemonIndex).stats.life == 0) {
+          pokemon.get(currentPokemonIndex) == null || pokemon.get(currentPokemonIndex).getStats().life == 0) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         return pokemon.get(currentPokemonIndex);
@@ -42,10 +42,10 @@ public class Trainer implements Fighter {
     }
 
     public void killPokemon() {
-        if(currentPokemonIndex < 0 || currentPokemonIndex > pokemon.size() - 1 || pokemon.get(currentPokemonIndex).stats.life == 0 || pokemon.get(currentPokemonIndex) == null) {
+        if(currentPokemonIndex < 0 || currentPokemonIndex > pokemon.size() - 1 || pokemon.get(currentPokemonIndex).getStats().life == 0 || pokemon.get(currentPokemonIndex) == null) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        pokemon.get(currentPokemonIndex).stats.life = 0;
+        pokemon.get(currentPokemonIndex).setLife(0);
     }
 
 }

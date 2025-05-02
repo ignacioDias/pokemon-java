@@ -6,11 +6,11 @@ public class SavagePokemon implements Fighter {
         this.pokemon = pokemon;
     }
     public boolean canFight() {
-        return pokemon.stats.life > 0;
+        return pokemon.getStats().life > 0;
     }
 
     public Pokemon getNextPokemon() throws IllegalStateException {
-        if(pokemon == null || pokemon.stats.life == 0)
+        if(pokemon == null || pokemon.getStats().life == 0)
             throw new IllegalStateException("pokemon isn't available");
         return pokemon;
     }
@@ -22,6 +22,6 @@ public class SavagePokemon implements Fighter {
     }
 
     public void killPokemon() {
-        pokemon.stats.life = 0;
+        pokemon.setLife(0);
     }
 }

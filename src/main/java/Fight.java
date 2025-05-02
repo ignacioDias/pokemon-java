@@ -20,7 +20,7 @@ public class Fight {
         while (fighter1.canFight() && fighter2.canFight()) {
             Pokemon pokemon1 = new Pokemon(fighter1.getNextPokemon());
             Pokemon pokemon2 = new Pokemon(fighter2.getNextPokemon());
-            while (pokemon1.stats.life > 0 && pokemon2.stats.life > 0) {
+            while (pokemon1.getStats().life > 0 && pokemon2.getStats().life > 0) {
                 Attack attack1 = fighter1.getNextAttack();
                 Attack attack2 = fighter2.getNextAttack();
 
@@ -31,17 +31,17 @@ public class Fight {
                     performTurn(pokemon2, pokemon1, attack2, attack1);
                 }
             }
-            if(pokemon1.stats.life <= 0)
+            if(pokemon1.getStats().life <= 0)
                 fighter1.killPokemon();
-            if(pokemon2.stats.life <= 0)
+            if(pokemon2.getStats().life <= 0)
                 fighter2.killPokemon();
         }
         System.out.println((fighter1.canFight() ? fighter1 : fighter2) + " wins");
     }
 
     private boolean isFirstAttacker(Pokemon p1, Pokemon p2) {
-        if (p1.stats.speed > p2.stats.speed) return true;
-        if (p1.stats.speed < p2.stats.speed) return false;
+        if (p1.getStats().speed > p2.getStats().speed) return true;
+        if (p1.getStats().speed < p2.getStats().speed) return false;
         return rand.nextBoolean(); // random when equal speed
     }
 
@@ -49,7 +49,7 @@ public class Fight {
         checkClearStatus(first);
         if(canAttack(first))
             firstAttack.attack(first, second);
-        if (second.stats.life <= 0) {
+        if (second.getStats().life <= 0) {
             return; // only attack if still alive
         }
         checkClearStatus(second);

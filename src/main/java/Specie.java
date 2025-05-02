@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Random;
 
 public class Specie {
     int id;
@@ -30,4 +31,17 @@ public class Specie {
         return !(firstType == Type.NONE || id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null || movementsByOtherWays == null || movementsByOtherWays.isEmpty() || availableSexes == null || availableSexes.isEmpty() || movementsByLevel.isEmpty());
     }
 
+    public Attack[] generateAttacks(int level) {
+        Random rand = new Random();
+        int index = 0;
+        Attack[] attacks = {null, null, null, null};
+        for(Tuple<Integer, Attack> attack : movementsByLevel) {
+            if(attack.first <= level && rand.nextBoolean()) {
+                attacks[index++] = attack.second;
+            }
+            if(index == 4)
+                break;
+        }
+        return attacks;
+    }
 }
