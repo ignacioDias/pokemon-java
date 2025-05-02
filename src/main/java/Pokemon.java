@@ -1,11 +1,12 @@
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Pokemon {
 
     String name;
     private Stats stats;
-    Stats evs = new Stats(0, 0, 0, 0);
+    Stats evs = new Stats(1, 1, 1, 1);
     Stats ivs;
     Specie specie;
     int level;
@@ -26,6 +27,12 @@ public class Pokemon {
         this.specie = pokemonToCopy.specie;
         this.level = pokemonToCopy.level;
         this.attacks = pokemonToCopy.attacks;
+        this.sex = pokemonToCopy.sex;
+        this.nature = pokemonToCopy.nature;
+        this.isShiny = pokemonToCopy.isShiny;
+        this.currentExperience = pokemonToCopy.currentExperience;
+        this.state = pokemonToCopy.state;
+        this.statsAffectedByStates = pokemonToCopy.statsAffectedByStates;
     }
     public Pokemon(Specie specie, int level) {
 
@@ -44,7 +51,7 @@ public class Pokemon {
         int randomNaturePosition = random.nextInt(natures.length);
         this.nature = natures[randomNaturePosition];
 
-        this.attacks = specie.generateAttacks(level);
+        this.attacks = generateAttacks();
         this.isShiny = this.determineShiny();
         this.currentExperience = 0;
 
@@ -54,12 +61,27 @@ public class Pokemon {
         int speedIVS = random.nextInt(31) + 1;
         this.ivs = new Stats(lifeIVS, attackIVS, defenseIVS, speedIVS);
 
-        int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10;
+        int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10; //TODO: life should be current and max
         this.stats = new Stats(life, 0,0,0);
         this.stats = this.calculateStats();
 
         if(!repOk())
             throw new IllegalArgumentException("Pokemon doesn't sat repOk");
+    }
+    private Attack[] generateAttacks() {
+        Random rand = new Random();
+        int index = 0;
+        Attack[] attacks = {null, null, null, null};
+        for(Tuple<Integer, Attack> attack : specie.movementsByLevel) {
+            if(attack.first <= level && rand.nextBoolean()) {
+                attacks[index++] = attack.second;
+            }
+            if(index == 4)
+                break;
+        }
+        if(index == 0)
+            attacks[0] = new Attack("Punch", Type.NORMAL, 15, 100, "Generic attack", Effect.NONE, 0) ;
+        return attacks;
     }
     private boolean determineShiny() {
         return random.nextInt(100) == 1;
@@ -100,7 +122,8 @@ public class Pokemon {
                 specie.baseStats.speed, ivs.speed, evs.speed, level,
                 getNatStats().speed, statsAffectedByStates.speed
         );
-
+        if(this.stats.life < 0)
+            this.stats.life = 0;
         return new Stats(this.stats.life, attack, defense, speed);
     }
     private int applyNatureAndState(int base, int iv, int ev, int level, int natureModifier, int stateModifier) {
@@ -136,7 +159,21 @@ public class Pokemon {
     }
 
     public void increaseEvs(Stats evsToIncrement) {
-    //TODO
+        this.evs.speed += evsToIncrement.speed;
+        if(this.evs.speed > 252)
+            this.evs.speed = 252;
+
+        this.evs.life += evsToIncrement.life;
+        if(this.evs.life > 252)
+            this.evs.life = 252;
+
+        this.evs.attack += evsToIncrement.attack;
+        if(this.evs.attack > 252)
+            this.evs.attack = 252;
+
+        this.evs.defense += evsToIncrement.defense;
+        if(this.evs.defense > 252)
+            this.evs.defense = 252;
     }
     public void increaseCurrentExperience(int experience) {
         if(experience < 1)
@@ -156,9 +193,44 @@ public class Pokemon {
         if(this.level < 100) {
             this.level++;
             this.currentExperience = 0;
+            checkLearnMove();
+            int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10;
+            setLife(life);
         }
-        //TODO: CHECK EVOLVING
+        if(specie.evolutionsByLevel.isEmpty()) {
+            return;
+        }
+        Integer levelToEvolve = specie.evolutionsByLevel.get(0).first;
+        if(levelToEvolve <= this.level) {
+            Specie specieToEvolve = specie.evolutionsByLevel.get(0).second;
+            evolve(specieToEvolve);
+            int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10;
+            setLife(life);
+            checkLearnMove();
+        }
     }
+    private void checkLearnMove() {
+        Scanner sc = new Scanner(System.in);
+        for(Tuple<Integer, Attack> attackToLearn : specie.movementsByLevel) {
+            if(attackToLearn.first == this.level) {
+                System.out.println("Want to lean:" + attackToLearn.second.name + "? (1/0)");
+                if(sc.nextInt() == 1) {
+                    System.out.println("Choose a move to forget: 1-4");
+                    int input = sc.nextInt();
+                    if(input < 1 || input > 4)
+                        throw new IllegalArgumentException("Invalid move");
+                    this.attacks[input - 1] = attackToLearn.second;
+                } else {
+                    System.out.println("Move not learned");
+                }
+            }
+        }
+    }
+    private void evolve(Specie specieToEvolve) {
+        this.specie = specieToEvolve;
+        this.name = specieToEvolve.name;
+    }
+
     public void clearStatus() {
         if(this.state == Effect.BURN)
             this.statsAffectedByStates.attack = 100;
@@ -166,6 +238,7 @@ public class Pokemon {
             this.statsAffectedByStates.speed = 100;
         this.state = Effect.NONE;
     }
+
     public boolean repOk() {
         if(this.attacks == null || this.attacks.length == 0 || this.state == null || this.specie == null)
             return false;

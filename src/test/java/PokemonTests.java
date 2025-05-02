@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class PokemonTest {
+public class PokemonTests {
     private Attack mockAttack;
     private Stats mockStats;
     private Specie mockSpecie;
@@ -20,7 +20,7 @@ public class PokemonTest {
         List<Tuple<LearnMethod, Attack>> movementsByOtherWays = List.of(new Tuple<>(LearnMethod.MT, mockAttack));
         List<Sex> sexes = List.of(Sex.OTHER);
         mockStats = mock(Stats.class);
-        mockSpecie = new Specie(1, "Dummy", null, movementsByLevel, movementsByOtherWays, Type.FIRE, null, mockStats, sexes, mockStats);
+        mockSpecie = new Specie(1, "Dummy", null, null, movementsByLevel, movementsByOtherWays, Type.FIRE, null, mockStats, sexes, mockStats);
     }
 
     @Test

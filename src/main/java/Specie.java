@@ -1,10 +1,10 @@
 import java.util.List;
-import java.util.Random;
 
 public class Specie {
     int id;
     String name;
-    List<Tuple<EvolutionMethod, Specie>> evolutions;
+    List<Tuple<EvolutionMethod, Specie>> evolutionsByOtherMethods;
+    List<Tuple<Integer, Specie>> evolutionsByLevel;
     List<Tuple<Integer,Attack>> movementsByLevel; //(level, attack)
     List<Tuple<LearnMethod,Attack>> movementsByOtherWays;
     Type firstType;
@@ -13,10 +13,11 @@ public class Specie {
     List<Sex> availableSexes;
     Stats evsGivenAfterDefeat;
 
-    public Specie(int id, String name, List<Tuple<EvolutionMethod, Specie>> evolutions, List<Tuple<Integer, Attack>> movementsByLevel, List<Tuple<LearnMethod,Attack>>movementsByOtherWays, Type firstType, Type secondType, Stats baseStats, List<Sex> availableSexes, Stats evsGivenAfterDefeat) {
+    public Specie(int id, String name, List<Tuple<Integer, Specie>> evolutionsByLevel, List<Tuple<EvolutionMethod, Specie>> evolutionsByOtherMethods, List<Tuple<Integer, Attack>> movementsByLevel, List<Tuple<LearnMethod,Attack>>movementsByOtherWays, Type firstType, Type secondType, Stats baseStats, List<Sex> availableSexes, Stats evsGivenAfterDefeat) {
         this.id = id;
         this.name = name;
-        this.evolutions = evolutions;
+        this.evolutionsByLevel = evolutionsByLevel;
+        this.evolutionsByOtherMethods = evolutionsByOtherMethods;
         this.movementsByLevel = movementsByLevel;
         this.movementsByOtherWays = movementsByOtherWays;
         this.firstType = firstType;
@@ -28,33 +29,21 @@ public class Specie {
     public Specie(Specie specieToCopy) {
         this.id = specieToCopy.id;
         this.name = specieToCopy.name;
-        this.evolutions = specieToCopy.evolutions;
+        this.evolutionsByLevel = specieToCopy.evolutionsByLevel;
+        this.evolutionsByOtherMethods = specieToCopy.evolutionsByOtherMethods;
         this.movementsByLevel = specieToCopy.movementsByLevel;
         this.movementsByOtherWays = specieToCopy.movementsByOtherWays;
         this.firstType = specieToCopy.firstType;
         this.secondType = specieToCopy.secondType;
         this.baseStats = specieToCopy.baseStats;
         this.availableSexes = specieToCopy.availableSexes;
-
+        this.evsGivenAfterDefeat = specieToCopy.evsGivenAfterDefeat;
     }
     public boolean repOK() {
         //todo: check no attacks with wrong levels
-        return !(firstType == Type.NONE || id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null || movementsByOtherWays == null || movementsByOtherWays.isEmpty() || availableSexes == null || availableSexes.isEmpty() || movementsByLevel.isEmpty());
+        return !(firstType == Type.NONE || id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null ||
+                movementsByOtherWays == null || movementsByOtherWays.isEmpty() || availableSexes == null || availableSexes.isEmpty() ||
+                movementsByLevel.isEmpty() || evsGivenAfterDefeat == null || !evsGivenAfterDefeat.repOK());
     }
 
-    public Attack[] generateAttacks(int level) {
-        Random rand = new Random();
-        int index = 0;
-        Attack[] attacks = {null, null, null, null};
-        for(Tuple<Integer, Attack> attack : movementsByLevel) {
-            if(attack.first <= level && rand.nextBoolean()) {
-                attacks[index++] = attack.second;
-            }
-            if(index == 4)
-                break;
-        }
-        if(index == 0)
-            attacks[0] = new Attack("Punch", Type.NORMAL, 15, 100, "Generic attack", Effect.NONE, 0) ;
-        return attacks;
-    }
 }

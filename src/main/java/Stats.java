@@ -9,14 +9,18 @@ public class Stats {
         this.attack = attack;
         this.defense = defense;
         this.speed = speed;
+        if(!repOK())
+            throw new IllegalArgumentException("Stats cannot be repOK");
     }
     public Stats(Stats statsToCopy) {
         this.life = statsToCopy.life;
         this.attack = statsToCopy.attack;
         this.defense = statsToCopy.defense;
         this.speed = statsToCopy.speed;
+        if(!repOK())
+            throw new IllegalArgumentException("Stats cannot be repOK");
     }
     boolean repOK() {
-        return !(life < 0 || attack < 0 || defense < 0 || speed < 0);
+        return life > 0 && attack > 0 && defense > 0 && speed > 0;
     }
 }

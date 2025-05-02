@@ -15,10 +15,10 @@ public class Trainer implements Fighter {
         return !pokemon.isEmpty();
     }
     public Pokemon getNextPokemon() throws IndexOutOfBoundsException {
-        System.out.println("Ingrese el pokemon a lanzar, empezando del 0");
+        System.out.println("Choose a pokemon starting from 0");
         currentPokemonIndex = sc.nextInt();
         if(currentPokemonIndex < 0 || currentPokemonIndex > pokemon.size() - 1 ||
-          pokemon.get(currentPokemonIndex) == null || pokemon.get(currentPokemonIndex).getStats().life == 0) {
+          pokemon.get(currentPokemonIndex) == null || pokemon.get(currentPokemonIndex).isDead()) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
         return pokemon.get(currentPokemonIndex);
@@ -32,7 +32,7 @@ public class Trainer implements Fighter {
     }
 
     public Attack getNextAttack() throws IndexOutOfBoundsException {
-        System.out.println("Ingrese el ataque a usar, empezando del 0");
+        System.out.println("Choose the attack, starting with 0");
         Pokemon currentPokemon = pokemon.get(currentPokemonIndex);
         int attack = sc.nextInt();
         if(attack < 0 || attack > 3 || currentPokemon.attacks[attack] == null) {

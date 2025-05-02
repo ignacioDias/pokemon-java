@@ -1,5 +1,4 @@
 public enum EvolutionMethod {
-    LEVEL,
     TRADE,
     STONE,
     HAPPINESS,

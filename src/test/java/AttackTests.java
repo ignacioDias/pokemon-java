@@ -19,8 +19,6 @@ public class AttackTests {
         specie.movementsByOtherWays = List.of(new Tuple<>(LearnMethod.MT, mock(Attack.class)));
         specie.name = "Beautiful";
     }
-
-
     @Test
     public void testSuccessfulAttack() {
         Pokemon pokemonRival = new Pokemon(specie, 10);
