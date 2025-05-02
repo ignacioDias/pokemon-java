@@ -10,7 +10,6 @@ import static org.mockito.Mockito.*;
 
 public class PokemonTests {
     private Attack mockAttack;
-    private Stats mockStats;
     private Specie mockSpecie;
 
     @Before
@@ -19,8 +18,7 @@ public class PokemonTests {
         List<Tuple<Integer, Attack>> movementsByLevel = List.of(new Tuple<>(0, mockAttack));
         List<Tuple<LearnMethod, Attack>> movementsByOtherWays = List.of(new Tuple<>(LearnMethod.MT, mockAttack));
         List<Sex> sexes = List.of(Sex.OTHER);
-        mockStats = mock(Stats.class);
-        mockSpecie = new Specie(1, "Dummy", null, null, movementsByLevel, movementsByOtherWays, Type.FIRE, null, mockStats, sexes, mockStats);
+        mockSpecie = new Specie(1, "Dummy", null, null, movementsByLevel, movementsByOtherWays, Type.FIRE, null, new Stats(1,1,1,1), sexes, new Stats(1,1,1,1));
     }
 
     @Test

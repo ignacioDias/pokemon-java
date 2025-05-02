@@ -14,6 +14,7 @@ public class Pokemon {
     Sex sex;
     Nature nature;
     boolean isShiny;
+    int currentLife;
     int currentExperience;
     Effect state;
     Stats statsAffectedByStates = new Stats(100, 100, 100, 100);
@@ -33,6 +34,7 @@ public class Pokemon {
         this.currentExperience = pokemonToCopy.currentExperience;
         this.state = pokemonToCopy.state;
         this.statsAffectedByStates = pokemonToCopy.statsAffectedByStates;
+        this.currentLife = pokemonToCopy.currentLife;
     }
     public Pokemon(Specie specie, int level) {
 
@@ -61,10 +63,8 @@ public class Pokemon {
         int speedIVS = random.nextInt(31) + 1;
         this.ivs = new Stats(lifeIVS, attackIVS, defenseIVS, speedIVS);
 
-        int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10; //TODO: life should be current and max
-        this.stats = new Stats(life, 0,0,0);
-        this.stats = this.calculateStats();
-
+        this.updateStats();
+        this.currentLife = this.stats.life;
         if(!repOk())
             throw new IllegalArgumentException("Pokemon doesn't sat repOk");
     }
@@ -87,27 +87,33 @@ public class Pokemon {
         return random.nextInt(100) == 1;
     }
     public Stats getStats() {
-        this.stats = this.calculateStats();
+        this.updateStats();
         return this.stats;
     }
     public void setLife(int life) {
-        this.stats = this.calculateStats();
-        this.stats.life = life;
+        this.updateStats();
+        assert life < this.stats.life;
+        this.currentLife = life;
+        if(currentLife < 0)
+            currentLife = 0;
     }
     public void setAttack(int attack) {
-        this.stats = this.calculateStats();
+        this.updateStats();
         this.stats.attack = attack;
     }
     public void setDefense(int defense) {
-        this.stats = this.calculateStats();
+        this.updateStats();
         this.stats.defense = defense;
     }
     public void setSpeed(int speed) {
-        this.stats = this.calculateStats();
+        this.updateStats();
         this.stats.speed = speed;
     }
 
-    private Stats calculateStats() {
+    private void updateStats() {
+        if(this.currentLife < 0)
+            this.currentLife = 0;
+        int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10;
         int attack = applyNatureAndState(
                 specie.baseStats.attack, ivs.attack, evs.attack, level,
                 getNatStats().attack, statsAffectedByStates.attack
@@ -122,9 +128,7 @@ public class Pokemon {
                 specie.baseStats.speed, ivs.speed, evs.speed, level,
                 getNatStats().speed, statsAffectedByStates.speed
         );
-        if(this.stats.life < 0)
-            this.stats.life = 0;
-        return new Stats(this.stats.life, attack, defense, speed);
+        this.stats = new Stats(life, attack, defense, speed);
     }
     private int applyNatureAndState(int base, int iv, int ev, int level, int natureModifier, int stateModifier) {
         float stat = (((2 * base + iv + (ev / 4.0f)) * level) / 100.0f) + 5;
@@ -194,8 +198,7 @@ public class Pokemon {
             this.level++;
             this.currentExperience = 0;
             checkLearnMove();
-            int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10;
-            setLife(life);
+            updateStats();
         }
         if(specie.evolutionsByLevel.isEmpty()) {
             return;
@@ -204,8 +207,7 @@ public class Pokemon {
         if(levelToEvolve <= this.level) {
             Specie specieToEvolve = specie.evolutionsByLevel.get(0).second;
             evolve(specieToEvolve);
-            int life = (((2 * specie.baseStats.life + ivs.life + (evs.life / 4)) * level) / 100) + level + 10;
-            setLife(life);
+            updateStats();
             checkLearnMove();
         }
     }
@@ -243,7 +245,9 @@ public class Pokemon {
         if(this.attacks == null || this.attacks.length == 0 || this.state == null || this.specie == null)
             return false;
         for (Attack attack : this.attacks) {
-            if(attack == null || attack.name.equals("Punch"))
+            if(attack == null)
+                continue;
+            if(attack.name.equals("Punch"))
                 continue;
             boolean attackLearnedByLevel = attackExistsInList(this.specie.movementsByLevel, attack);
             boolean attackLearnedByOtherWay = attackExistsInList(this.specie.movementsByOtherWays, attack);
@@ -266,8 +270,11 @@ public class Pokemon {
         assert isDead();
     }
     public boolean isDead() {
-        this.calculateStats();
-        return this.stats.life <= 0;
+        this.updateStats();
+        return this.currentLife == 0;
+    }
+    public void heal() {
+        setLife(this.stats.life);
     }
 }
 

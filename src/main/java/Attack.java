@@ -29,7 +29,7 @@ public class Attack {
             applyEffect(this.effect, rival);
         if(!isStatusAttack) {
             int damage = calculateDamage(attacker, rival);
-            rival.setLife(rival.getStats().life - damage);
+            rival.setLife(rival.currentLife - damage);
         }
         return true;
     }
@@ -158,5 +158,13 @@ public class Attack {
                 (isStatusAttack && damage > 0) || (!isStatusAttack && damage == 0) ||
                 accuracy < 0 || accuracy > 100 || probabilityOfEffect < 0 || probabilityOfEffect > 100 ||
                 ((probabilityOfEffect == 0) == (effect == Effect.NONE)));
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Attack otherAttack = (Attack) o;
+        return this.name.equals(otherAttack.name);
     }
 }

@@ -15,7 +15,7 @@ public class AttackTests {
         specie.secondType = null;
         specie.movementsByLevel = List.of(new Tuple<>(1, new Attack("Punch", Type.FIGHT, 15, 100, "Generic Attack", Effect.NONE, 0)));
         specie.baseStats = new Stats(12,12,12,12);
-        specie.evsGivenAfterDefeat = new Stats(1,0,0,1);
+        specie.evsGivenAfterDefeat = new Stats(1,1,1,1);
         specie.movementsByOtherWays = List.of(new Tuple<>(LearnMethod.MT, mock(Attack.class)));
         specie.name = "Beautiful";
     }
@@ -23,9 +23,9 @@ public class AttackTests {
     public void testSuccessfulAttack() {
         Pokemon pokemonRival = new Pokemon(specie, 10);
         Pokemon pokemonAttacker = new Pokemon(specie, 2);
-        int oldLife = pokemonRival.getStats().life;
+        int oldLife = pokemonRival.currentLife;
         attack.attack(pokemonAttacker, pokemonRival);
-        assertNotEquals(oldLife, pokemonRival.getStats().life);
+        assertNotEquals(oldLife, pokemonRival.currentLife);
     }
     @Test
     public void testKillerAttack() {
@@ -47,17 +47,17 @@ public class AttackTests {
     }
     @Test
     public void testNeverMissingAttack() {
+        specie.baseStats = new Stats(1200000,12,12,12);
         Pokemon pokemonRival = new Pokemon(specie, 100);
-        pokemonRival.setLife(2100000000);
         Pokemon pokemonAttacker = new Pokemon(specie, 1);
-        int oldLife = pokemonRival.getStats().life;
+        int oldLife = pokemonRival.currentLife;
         Attack attackNeverMissing = new Attack("Don't miss", Type.FIGHT, 1, 100, "Miss", Effect.NONE, 0);
         for(int i = 0; i < 1000000; i++) {
             attackNeverMissing.attack(pokemonAttacker, pokemonRival);
-            if(oldLife == pokemonRival.getStats().life) {
+            if(oldLife == pokemonRival.currentLife) {
                 fail();
             }
-            oldLife = pokemonRival.getStats().life;
+            oldLife = pokemonRival.currentLife;
         }
         assertTrue(true);
     }
