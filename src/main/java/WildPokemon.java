@@ -11,6 +11,11 @@ public class WildPokemon implements Fighter {
         return pokemon.currentLife > 0;
     }
 
+    public String getName() {
+        assert this.pokemon != null;
+        return this.pokemon.name;
+    }
+
     public Pokemon getNextPokemon() throws IllegalStateException {
         if(pokemon == null || pokemon.currentLife == 0)
             throw new IllegalStateException("pokemon isn't available");

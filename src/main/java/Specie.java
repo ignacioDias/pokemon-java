@@ -25,6 +25,8 @@ public class Specie {
         this.baseStats = baseStats;
         this.availableSexes = availableSexes;
         this.evsGivenAfterDefeat = evsGivenAfterDefeat;
+        if(!repOK())
+            throw new IllegalStateException("Specie was not repOK");
     }
     public Specie(Specie specieToCopy) {
         this.id = specieToCopy.id;
@@ -38,6 +40,8 @@ public class Specie {
         this.baseStats = specieToCopy.baseStats;
         this.availableSexes = specieToCopy.availableSexes;
         this.evsGivenAfterDefeat = specieToCopy.evsGivenAfterDefeat;
+        if(!repOK())
+            throw new IllegalStateException("Specie was not repOK");
     }
     public boolean repOK() {
         //todo: check no attacks with wrong levels

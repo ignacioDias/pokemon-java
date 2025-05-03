@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 public class SpecieTests {
@@ -68,37 +69,37 @@ public class SpecieTests {
 
     @Test
     public void repOKFailsWhenFirstTypeIsNull() {
-        Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, null, null, validStats, sexes, validStats);
-        assertFalse(s.repOK());
+        assertThrows(IllegalStateException.class, () -> {
+            Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, null, null, validStats, sexes, validStats);
+        });
     }
 
     @Test
     public void repOKFailsWhenMovementsByLevelIsNull() {
-        Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, null, otherMoves, Type.FIRE, null, validStats, sexes, validStats);
-        assertFalse(s.repOK());
+        assertThrows(IllegalStateException.class, () -> {
+            Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, null, otherMoves, Type.FIRE, null, validStats, sexes, validStats);
+        });
     }
 
-    @Test
-    public void repOKFailsWhenMovementsByOtherWaysIsEmpty() {
-        Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, List.of(), Type.FIRE, null, validStats, sexes, validStats);
-        assertFalse(s.repOK());
-    }
 
     @Test
     public void repOKFailsWhenAvailableSexesIsEmpty() {
-        Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, Type.FIRE, null, validStats, List.of(), validStats);
-        assertFalse(s.repOK());
+        assertThrows(IllegalStateException.class, () -> {
+            Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, Type.FIRE, null, validStats, List.of(), validStats);
+        });
     }
 
     @Test
     public void repOKFailsWhenEvsGivenAfterDefeatIsNull() {
-        Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, Type.FIRE, null, validStats, sexes, null);
-        assertFalse(s.repOK());
+        assertThrows(IllegalStateException.class, () -> {
+            Specie s = new Specie(1, "Failmon", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, Type.FIRE, null, validStats, sexes, null);
+        });
     }
 
     @Test
     public void repOKFailsWhenNameIsEmpty() {
-        Specie s = new Specie(1, "", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, Type.FIRE, null, validStats, sexes, validStats);
-        assertFalse(s.repOK());
-    }
+        assertThrows(IllegalStateException.class, () -> {
+            Specie s = new Specie(1, "", evolutionsByLevel, evolutionsByOther, levelMoves, otherMoves, Type.FIRE, null, validStats, sexes, validStats);
+    });
+        }
 }

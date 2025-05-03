@@ -3,4 +3,5 @@ public interface Fighter {
     public Pokemon getNextPokemon();
     public Attack getNextAttack();
     public void killPokemon();
+    public String getName();
 }
