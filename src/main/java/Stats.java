@@ -21,6 +21,6 @@ public class Stats {
             throw new IllegalArgumentException("Stats cannot be repOK");
     }
     boolean repOK() {
-        return life > 0 && attack > 0 && defense > 0 && speed > 0;
+        return life >= 0 && attack >= 0 && defense >= 0 && speed >= 0;
     }
 }

@@ -42,8 +42,8 @@ public class Specie {
     public boolean repOK() {
         //todo: check no attacks with wrong levels
         return !(firstType == Type.NONE || id < 0 || name.isEmpty() || firstType == null || movementsByLevel == null ||
-                movementsByOtherWays == null || movementsByOtherWays.isEmpty() || availableSexes == null || availableSexes.isEmpty() ||
-                movementsByLevel.isEmpty() || evsGivenAfterDefeat == null || !evsGivenAfterDefeat.repOK());
+                availableSexes == null || availableSexes.isEmpty() || movementsByLevel.isEmpty() ||
+                evsGivenAfterDefeat == null);
     }
 
 }

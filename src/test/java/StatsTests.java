@@ -21,8 +21,8 @@ public class StatsTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void statsWithZeroLifeShouldFail() {
-        new Stats(0, 10, 10, 10);
+    public void statsWithNegativeLifeShouldFail() {
+        new Stats(-1, 10, 10, 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -31,8 +31,8 @@ public class StatsTests {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void statsWithZeroDefenseShouldFail() {
-        new Stats(10, 10, 0, 10);
+    public void statsWithNegativeDefenseShouldFail() {
+        new Stats(10, 10, -1, 10);
     }
 
     @Test(expected = IllegalArgumentException.class)

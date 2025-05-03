@@ -7,7 +7,7 @@ public class Trainer implements Fighter {
     List<Pokemon> pokemon;
     int currentPokemonIndex = -1;
     Scanner sc = new Scanner(System.in);
-
+    List<Item> bag;
     public Trainer() {
         this.pokemon = new ArrayList<>();
     }

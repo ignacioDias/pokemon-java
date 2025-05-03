@@ -4,7 +4,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WildPokemonTests {
 
@@ -14,13 +14,14 @@ public class WildPokemonTests {
     @Before
     public void setUp() {
         Stats stats = new Stats(1, 1, 1, 1);
+        Attack attack = new Attack("Kick", Type.FIGHT, 20, 100, "Kick", Effect.NONE, 0);
         List<Tuple<Integer, Specie>> evolutionsByLevel = new ArrayList<>();
         List<Tuple<EvolutionMethod, Specie>> evolutionsByOtherMethods = new ArrayList<>();
-        List<Tuple<Integer, Attack>> movementsByLevel = new ArrayList<>();
+        List<Tuple<Integer, Attack>> movementsByLevel = List.of(new Tuple<>(1, attack));
         List<Tuple<LearnMethod, Attack>> movementsByOtherWays = new ArrayList<>();
         Type firstType = Type.FIRE;
-        Type secondType = Type.NONE;
-        List<Sex> availableSexes = List.of(Sex.MALE);
+        Type secondType = Type.WATER;
+        List<Sex> availableSexes = List.of(Sex.MALE, Sex.FEMALE);
 
         Specie specie = new Specie(
                 1,
@@ -47,7 +48,7 @@ public class WildPokemonTests {
 
     @Test
     public void wildPokemonCannotFightWhenDead() {
-        when(pokemon.getStats()).thenReturn(new Stats(0, 10, 10, 10));
+        wild.killPokemon();
         assertFalse(wild.canFight());
     }
 
@@ -57,23 +58,32 @@ public class WildPokemonTests {
         noPokemon.getNextPokemon();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void throwsWhenPokemonIsDead() {
-        when(pokemon.getStats()).thenReturn(new Stats(0, 10, 10, 10));
-        wild.getNextPokemon();  // Should throw
+        wild.killPokemon();
+        assertThrows(IllegalStateException.class, () -> {
+            wild.getNextPokemon();  // Should throw
+        });
     }
 
     @Test
     public void killPokemonDelegatesToPokemonDead() {
         wild.killPokemon();
-        verify(pokemon).isDead();
+        assertTrue(pokemon.isDead());
     }
 
     @Test
     public void getNextAttackReturnsOneOfTheAvailableAttacks() {
         Attack result = wild.getNextAttack();
         assertNotNull(result);
-        assertTrue(List.of(pokemon.attacks).contains(result));
+        boolean contains = false;
+        for(Attack attack : pokemon.attacks) {
+            if(attack.equals(result)) {
+                contains = true;
+                break;
+            }
+        }
+        assertTrue(contains);
     }
     @Test
     public void testOnlyOnePokemon() {

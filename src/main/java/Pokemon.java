@@ -274,7 +274,17 @@ public class Pokemon {
         return this.currentLife == 0;
     }
     public void heal() {
+        this.updateStats();
         setLife(this.stats.life);
+    }
+
+    public int getCantAttacks() {
+        int cantAttacks = 0;
+        for(Attack attack : this.attacks) {
+            if(attack != null)
+                cantAttacks++;
+        }
+        return cantAttacks;
     }
 }
 
