@@ -1,4 +1,5 @@
 public class Map {
+    Block[][] mapCopy;
     Block[][] map;
     int width;
     int height;
@@ -12,11 +13,17 @@ public class Map {
     public static final String WHITE = "\u001B[97m";
     public static final String RED = "\u001B[31m";
 
-    public Map(Block[][] map, int xPosPlayer, int yPosPlayer) {
+    public Map(Block[][] map, int rowPlayer, int colPlayer) {
         this.map = map;
+        this.mapCopy = new Block[map.length][map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            System.arraycopy(map[i], 0, this.mapCopy[i], 0, map[i].length);
+        }
+
         this.width = map.length;
         this.height = map[0].length;
-        this.currentPlayerPosition = new Tuple<>(xPosPlayer, yPosPlayer);
+        this.currentPlayerPosition = new Tuple<>(rowPlayer, colPlayer);
+        this.map[rowPlayer][colPlayer] = Block.PLAYER;
         if(!repOk()) {
             throw new IllegalArgumentException("Map doesn't sat repOk");
         }
@@ -65,8 +72,74 @@ public class Map {
         }
         return true;
     }
+    public void moveRight() {
+        if(currentPlayerPosition.second == this.width - 1) {
+            return;
+        }
+        Block blockToMove = this.map[currentPlayerPosition.first][currentPlayerPosition.second + 1];
+        if(!isBlockAvailableToMove(blockToMove)) {
+            return;
+        }
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = this.mapCopy[currentPlayerPosition.first][currentPlayerPosition.second];
+        currentPlayerPosition.second = currentPlayerPosition.second + 1;
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = Block.PLAYER;
+        if(!repOk()) {
+            throw new IllegalArgumentException("Map doesn't sat repOk");
+        }
+    }
+    public void moveLeft() {
+        if(currentPlayerPosition.second == 0) {
+            return;
+        }
+        Block blockToMove = this.map[currentPlayerPosition.first][currentPlayerPosition.second - 1];
+        if(!isBlockAvailableToMove(blockToMove)) {
+            return;
+        }
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = this.mapCopy[currentPlayerPosition.first][currentPlayerPosition.second];
+        currentPlayerPosition.second = currentPlayerPosition.second - 1;
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = Block.PLAYER;
+        if(!repOk()) {
+            throw new IllegalArgumentException("Map doesn't sat repOk");
+        }
+    }
+    public void moveUp() {
+        if(currentPlayerPosition.first == 0) {
+            return;
+        }
+        Block blockToMove = this.map[currentPlayerPosition.first - 1][currentPlayerPosition.second];
+        if(!isBlockAvailableToMove(blockToMove)) {
+            return;
+        }
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = this.mapCopy[currentPlayerPosition.first][currentPlayerPosition.second];
+        currentPlayerPosition.first = currentPlayerPosition.first - 1;
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = Block.PLAYER;
+        if(!repOk()) {
+            throw new IllegalArgumentException("Map doesn't sat repOk");
+        }
+    }
+    public void moveDown() {
+        if(currentPlayerPosition.first == this.map.length - 1) {
+            return;
+        }
+        Block blockToMove = this.map[currentPlayerPosition.first + 1][currentPlayerPosition.second];
+        if(!isBlockAvailableToMove(blockToMove)) {
+            return;
+        }
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = this.mapCopy[currentPlayerPosition.first][currentPlayerPosition.second];
+        currentPlayerPosition.first = currentPlayerPosition.first + 1;
+        this.map[currentPlayerPosition.first][currentPlayerPosition.second] = Block.PLAYER;
+        if(!repOk()) {
+            throw new IllegalArgumentException("Map doesn't sat repOk");
+        }
+    }
+    private boolean isBlockAvailableToMove(Block block) {
+        return block != Block.OBSTACLE && block != Block.DOOR && block != Block.WATER;
+    }
     public boolean repOk() {
         if(currentPlayerPosition == null) {
+            return false;
+        }
+        if(currentPlayerPosition.second >= width || currentPlayerPosition.first >= height) {
             return false;
         }
         if(width != map.length || height != map[0].length)
@@ -80,7 +153,20 @@ public class Map {
         }
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
-                if(map[x][y] == Block.PLAYER && x != currentPlayerPosition.first && y != currentPlayerPosition.second) {
+                if(this.mapCopy[x][y] == Block.PLAYER) {
+                    return false;
+                }
+                if(map[x][y] == Block.PLAYER && (x != currentPlayerPosition.first || y != currentPlayerPosition.second)) {
+                    return false;
+                }
+            }
+        }
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                if(x == currentPlayerPosition.first && y == currentPlayerPosition.second) {
+                    continue;
+                }
+                if(this.map[x][y] != this.mapCopy[x][y]) {
                     return false;
                 }
             }
