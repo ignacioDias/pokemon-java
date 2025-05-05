@@ -1,5 +1,7 @@
 import org.junit.Test;
 import org.junit.Before;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -7,17 +9,33 @@ import static org.mockito.Mockito.mock;
 
 public class AttackTests {
     Attack attack = new Attack("a", Type.FIGHT, 70, 100, "attack", Effect.NONE, 0);
-    Specie specie = new Specie(mock(Specie.class));
+    Specie specie;
     @Before
     public void setUp() {
-        specie.availableSexes = List.of(Sex.MALE, Sex.FEMALE);
-        specie.firstType = Type.FIGHT;
-        specie.secondType = null;
-        specie.movementsByLevel = List.of(new Tuple<>(1, new Attack("Punch", Type.FIGHT, 15, 100, "Generic Attack", Effect.NONE, 0)));
-        specie.baseStats = new Stats(12,12,12,12);
-        specie.evsGivenAfterDefeat = new Stats(1,1,1,1);
-        specie.movementsByOtherWays = List.of(new Tuple<>(LearnMethod.MT, mock(Attack.class)));
-        specie.name = "Beautiful";
+
+        Stats stats = new Stats(1, 1, 1, 1);
+        Attack attack = new Attack("Kick", Type.FIGHT, 20, 100, "Kick", Effect.NONE, 0);
+        List<Tuple<Integer, Specie>> evolutionsByLevel = new ArrayList<>();
+        List<Tuple<EvolutionMethod, Specie>> evolutionsByOtherMethods = new ArrayList<>();
+        List<Tuple<Integer, Attack>> movementsByLevel = List.of(new Tuple<>(1, attack));
+        List<Tuple<LearnMethod, Attack>> movementsByOtherWays = new ArrayList<>();
+        Type firstType = Type.FIRE;
+        Type secondType = Type.WATER;
+        List<Sex> availableSexes = List.of(Sex.MALE, Sex.FEMALE);
+
+        specie = new Specie(
+                1,
+                "example",
+                evolutionsByLevel,
+                evolutionsByOtherMethods,
+                movementsByLevel,
+                movementsByOtherWays,
+                firstType,
+                secondType,
+                stats,
+                availableSexes,
+                stats
+        );
     }
     @Test
     public void testSuccessfulAttack() {

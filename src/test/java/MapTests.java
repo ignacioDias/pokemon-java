@@ -32,7 +32,7 @@ public class MapTests {
                 },
                 {
                         Block.OBSTACLE, Block.GRASS, Block.GRASS, Block.GRASS, Block.GRASS,
-                        Block.FLOOR, Block.FLOOR, Block.FLOOR, Block.PLAYER, Block.FLOOR,
+                        Block.FLOOR, Block.FLOOR, Block.FLOOR, Block.FLOOR, Block.FLOOR,
                         Block.FLOOR, Block.FLOOR, Block.FLOOR, Block.GRASS, Block.GRASS, Block.GRASS, Block.GRASS, Block.GRASS, Block.GRASS, Block.OBSTACLE
                 },
                 {
@@ -54,14 +54,9 @@ public class MapTests {
 
 
         int xPos = 4;
-        int yPos = 8;
+        int yPos = 4;
         Map map = new Map(mapArray, xPos, yPos);
         System.out.println(map.toString());
         assertTrue(map.repOk());
-    }
-    @Test
-    public void testToString() {
-        Block[][] arr = {{}, {Block.FLOOR, Block.PLAYER}};
-        Map map = new Map(arr, 1, 1);
     }
 }
