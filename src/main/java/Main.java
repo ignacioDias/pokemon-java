@@ -54,45 +54,51 @@ public class Main {
                         Block.OBSTACLE, Block.OBSTACLE, Block.OBSTACLE
                 }
         };
+
         Map map = new Map(mapArray, 1, 1);
-        while(true) {
+
+        // Limpia pantalla inicial
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
+        System.out.println("Usa WASD para moverte. Presiona Q para salir.");
+
+        while (true) {
+            System.out.print("\033[H\033[2J"); // Limpia pantalla
+            System.out.flush();
             System.out.println(map.toString());
-            int first = System.in.read();
-            if (first == 27) { // ESC
-                int second = System.in.read(); // [
-                if (second == 91) {
-                    int third = System.in.read(); // A/B/C/D
-                    switch (third) {
-                        case 'A':
-                            map.moveUp();
-                            System.out.print("\033[H\033[2J");
-                            System.out.flush();
-                            System.out.println(map.toString());
-                            break;
-                        case 'B':
-                            map.moveDown();
-                            System.out.print("\033[H\033[2J");
-                            System.out.flush();
-                            System.out.println(map.toString());
-                            break;
-                        case 'C':
-                            map.moveRight();
-                            System.out.print("\033[H\033[2J");
-                            System.out.flush();
-                            System.out.println(map.toString());
-                            break;
-                        case 'D':
-                            map.moveLeft();
-                            System.out.print("\033[H\033[2J");
-                            System.out.flush();
-                            System.out.println(map.toString());
-                            break;
-                        default:
-                            System.out.println("Otra secuencia: " + third);
-                    }
-                }
-            } else {
-                System.out.println("Tecla regular: " + (char) first);
+
+            int input = System.in.read();
+            char key = Character.toLowerCase((char) input);
+
+            switch (key) {
+                case 'w':
+                    map.moveUp();
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    System.out.println(map.toString());
+                    break;
+                case 's':
+                    map.moveDown();
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    System.out.println(map.toString());
+                    break;
+                case 'd':
+                    map.moveRight();
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    System.out.println(map.toString());
+                    break;
+                case 'a':
+                    map.moveLeft();
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    System.out.println(map.toString());
+                    break;
+                case 'q':
+                    System.out.println("Saliendo...");
+                    break;
             }
         }
     }
